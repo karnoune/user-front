@@ -1,0 +1,101 @@
+<div class="card my-5">
+  <div class="card-body">
+    <form>
+      <div class="mb-3 row">
+        <label for="table-filtering-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
+        <div class="col-xs-3 col-sm-auto">
+          <input id="table-filtering-search" class="form-control" type="text" (keyup)="search($event.target)" />
+        </div>
+      </div>
+    </form>
+    <div class="col-md-12 text-right">
+    <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#userForm" (click)="setMode('CREATION'); initModale();">
+      <img src="./assets/images/add-user-icon.svg" alt="" width="25" height="25"/>
+      Créer un utilisateur
+    </button>
+  </div>
+    <table id="tableUser" class="table table-bordered table-striped">
+      <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Firstname</th>
+        <th scope="col">Lastname</th>
+        <th scope="col">Email</th>
+        <th scope="col">Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.firstName }}</td>
+        <td>{{ user.lastName }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <span><button style="border: none" data-toggle="modal" data-target="#userForm" (click)="initModale();setSelectedUser(user); setMode('UPDATE');" data-index="user"><img src="./assets/images/pencil-square.svg" alt="" width="25" height="25"/></button></span>
+          <span><button data-target="#deleteModal" data-delete data-toggle="modal" (click)="setSelectedUser(user); setMode('UPDATE')"><img src="./assets/images/trash.svg" alt="" width="25" height="25"/></button></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- modale confirmation-->
+<div class="modal fade" id="deleteModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Suppression Utilisateur</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Voulez-vous vraiment supprimer l'utilisateur sélectionné?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close-modal">Annuler</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal"(click)="deleteUser()">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- user form modale-->
+<div class="modal fade" id="userForm" tabindex="-1" role="dialog" aria-labelledby="userFormLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userFormLabel">Gestion d'utilisateur</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="formGroupFirstName">Prénom</label>
+            <input type="text" class="form-control" id="formGroupFirstName" placeholder="Prénom" name="firstName" required [(ngModel)]="firstname">
+          </div>
+          <div class="form-group">
+            <label for="formGroupLastName">Nom</label>
+            <input type="text" class="form-control" id="formGroupLastName" placeholder="Nom" name="lastName" required [(ngModel)]="lastname">
+          </div>
+          <div class="form-group">
+            <label for="formGroupEmail">Email</label>
+            <input type="email" class="form-control" id="formGroupEmail" placeholder="Email" name="email" required (keyup)="checkEmailUser(email)" [(ngModel)]="email" [disabled]="mode === 'UPDATE'">
+            <div
+              *ngIf="checkIfEmailAlreadyExist()"
+              class="alert">
+              <div style="color: red">L'email existe déjà.</div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" [disabled]="checkIfEmailAlreadyExist()" (click)="saveuser()">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
+
